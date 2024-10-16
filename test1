@@ -1,0 +1,37 @@
+import mysql.connector as sql
+mycon=sql.connect(host='localhost',user='root',passwd='karthikkl13',database='achu')
+cur=mycon.cursor()
+def Disp():
+    cur.execute("select item_id,ITEM_NAME,PRICE from Menu")
+    d=cur.fetchall()
+    print('-----------------------------')
+    for i in d:
+        print(i[0],'--',i[1],'->',i[2])
+    print('-----------------------------')
+    print('for ordering, press 1')
+    print('for adding a new dish, press 2')
+    print('removing a dish, press 3')
+    z=int(input('enter the number'))
+    if z==1:
+        order()
+def order():
+    cur.execute("create table _order(item_name char(20),qty int(2),price int(4))")
+    while True:
+        a=input('enter the item id')
+        cur.execute("select ITEM_NAME,PRICE from Menu where item_id='%s'"%(a))
+        q=cur.fetchall()
+        it=q[0][0]
+        quan=int(input('enter quantity'))
+        pri=q[0][1]*quan
+        cur.execute("insert into _order values('%s',%s,%s)"%(it,quan,pri))
+        mycon.commit()
+        ch=input('add more items? (y/n)')
+        if ch=='n':
+            break
+    cur.execute('select item_name,price from _order')
+    order=cur.fetchall()
+    for i in order:
+        print(i[0],i[1])
+    cur.execute("drop table _order")
+    mycon.commit()
+Disp()
