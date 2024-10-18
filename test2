@@ -1,0 +1,108 @@
+import time
+import os
+import mysql.connector as sql
+mycon=sql.connect(host='localhost',user='root',passwd='karthikkl13',database='achu')
+cur=mycon.cursor()
+def Disp():
+    while True:
+        os.system('cls')
+        print('\n=== RESTAURANT MANAGEMENT SYSTEM ===')
+        print('1. create new bill')
+        print('2. Add new item to menu')
+        print('3. Delete item from menu')
+        print('4. Exit')
+        a=int(input('\nenter your choice (1-4) : '))
+        
+        
+        if a==1:
+            os.system('cls')
+            order()
+        elif a==2:
+            os.system('cls')
+            create()
+        elif a==3:
+            os.system('cls')
+            delete()
+        elif a==4:
+            print('\nExiting the program')
+            break
+        else:
+            print('option invalid')
+def order():   
+    cur.execute("create table _order(item_id int,item_name char(20),qty char(2),price int(4))")
+    cur.execute("select item_id,ITEM_NAME,PRICE from Menu")
+    d=cur.fetchall()
+    c=0
+    while True:
+
+        print('\n === MENU ===')
+        print('')
+        for i in d:
+            print(i[0],'-',i[1],'->','₹',i[2])
+        c=c+1
+        a=input('\nenter the item number : ')
+        cur.execute("select ITEM_NAME,PRICE from Menu where item_id='%s'"%(a))
+        q=cur.fetchall()
+        it=q[0][0]
+        quan=int(input('enter quantity : '))
+        pri=q[0][1]*quan
+        cur.execute("insert into _order values(%s,'%s',%s,%s)"%(c,it,quan,pri))
+        mycon.commit()
+        ch=input('\nadd more items? (y/n) : ')
+        if ch=='n':
+            break
+        os.system('cls')
+    os.system('cls')
+    print('BILL')
+    cur.execute('select item_id,item_name,price,qty from _order')
+    order=cur.fetchall()
+    for i in order:
+        print(i[0],i[1],'x'+i[3],'->','₹',i[2])
+    cur.execute("drop table _order")
+    mycon.commit()
+    print('---------------------')
+    print('total' ,'->','₹',sum(i[2] for i in order))
+    o=input('\nEnter to continue')
+    
+
+def create():
+    while True:
+        os.system('cls')
+        cur.execute("select * from menu")
+        f=cur.fetchall()
+        q=1+len(f)
+        a=input('\nenter the item to be added : ')
+        p=input('enter price : ')
+        cur.execute("insert into menu values('%s','%s',%s)"%(q,a,p))
+        mycon.commit()
+        print('\nAdded sucessfully')
+        ch=input('\nadd more items? (y/n) : ')
+        if ch=='n':
+            break
+def delete():
+    
+    cur.execute('select item_name from menu')
+    c=cur.fetchall()
+    for i in c:
+        print(i[0])
+    l=0
+    while True:
+
+        d=input('enter the item want to be deleted : ')
+        for i in c:
+            if d in i:
+                cur.execute('delete from menu where item_name="%s"'%(d))
+                mycon.commit()
+                l=1
+        if l==0:
+            print('\nitem not found')
+            o=input('enter to continue')
+        
+        elif l==1:
+            print('\nitem deleted')
+            o=input('\nenter to continue')
+            break
+        break
+
+time.sleep(0.5)
+Disp()
