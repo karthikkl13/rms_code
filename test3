@@ -192,19 +192,18 @@ def update_price():
             print("No items in the menu to update.")
             return
 
-        # Display current menu items
+
         print("\n=== MENU ===")
         for item in items:
             print(f"{item[0]} - ₹{item[1]}")
 
-        # Get the item name to update
         item_name = input('\nEnter the name of the item to update the price: ')
         cur.execute("SELECT * FROM menu WHERE item_name=%s", (item_name,))
         item = cur.fetchone()
 
-        # Check if item exists
+        
         if item:
-            # Prompt for the new price
+            
             new_price = int(input('Enter the new price: '))
             Z=input('Are you sure want to change (enter to confirm)')
             cur.execute("UPDATE menu SET price=%s WHERE item_name=%s", (new_price, item_name))
