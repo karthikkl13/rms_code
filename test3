@@ -10,6 +10,7 @@ except sql.Error as err:
     exit()
 
 def login():
+    os.system('cls')
     print('------LOGIN------')
     print('1. For admin')
     print('2. For user')
