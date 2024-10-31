@@ -3,7 +3,7 @@ import os
 import mysql.connector as sql
 
 try:
-    mycon = sql.connect(host='localhost', user='root', passwd='karthikkl13', database='achu')
+    mycon = sql.connect(host='localhost', user='root', password='ASD123*', database='achu')
     cur = mycon.cursor()
 except sql.Error as err:
     print(f"Error: Could not connect to database. {err}")
